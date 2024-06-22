@@ -7,11 +7,6 @@ const app = express();
 const port = process.env.port || 5000
 const uri = process.env.MONGODB_URL;
 
-app.get("/", (req, res) => {
-    res.send("HI");
-})
-
-
 const start = () => {
     try {
         connectDB(uri);
