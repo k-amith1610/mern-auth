@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const SignUp = () => {
 
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: '', email: '', password: '' });
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -34,6 +35,9 @@ const SignUp = () => {
                 if (res.data) {
                     alert("Sign Up Successfull");
                     setLoading(false);
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 2000);
                     setTimeout(() => {
                         window.location.reload();
                     }, 3000);
