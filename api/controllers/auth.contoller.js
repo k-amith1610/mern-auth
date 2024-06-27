@@ -24,14 +24,18 @@ export const signup = async (req, res, next) => {
     })
     try {
         await newUser.save();
-        res.status(201).json({
-            message: "User created Successfully",
-            user: {
-                _id: newUser._id,
-                username: newUser.username,
-                email: newUser.email
-            }
-        })
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+        const { password: hashedPassword, ...rest } = newUser._doc;
+        const expiryDate = new Date(Date.now() + 3600000);
+        res.cookie("access_token", token, { httpOnly: true, expires: expiryDate }).status(201).json(rest);
+        // res.status(201).json({
+        //     message: "User created Successfully",
+        //     user: {
+        //         _id: newUser._id,
+        //         username: newUser.username,
+        //         email: newUser.email
+        //     }
+        // })
 
     } catch (error) {
         console.log(error);

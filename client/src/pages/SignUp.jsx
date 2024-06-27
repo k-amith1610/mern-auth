@@ -39,7 +39,7 @@ const SignUp = () => {
                         navigate("/");
                     }, 2000);
                     setTimeout(() => {
-                        window.location.reload();
+                        // window.location.reload();
                     }, 3000);
                     setError(false);
                 }
