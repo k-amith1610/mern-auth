@@ -2,13 +2,17 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 const SignIn = () => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
-    const [error, setError] = useState(false);
-    const [loading, setLoading] = useState(false);
-
+    // const [error, setError] = useState(false);
+    // const [loading, setLoading] = useState(false);
+    const { loading, error } = useSelector((state) => state.user);
 
     const validate = () => {
         const newErrors = {};
@@ -25,35 +29,40 @@ const SignIn = () => {
         e.preventDefault();
         const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
-            setError(validationErrors);
+            // setError(validationErrors);
+            dispatch(signInFailure(validationErrors));
             return;
         }
-        await axios.post("/api/auth/signin", formData)
-            .then((res) => {
-                setLoading(true);
-                console.log(res);
-                if (res.data) {
-                    alert("Sign In Successfull");
-                    setLoading(false);
-                    setTimeout(() => {
-                        navigate("/");
-                    }, 2000)
-                    setTimeout(() => {
-                        // window.location.reload();
-                    }, 3000);
-                    setError(false);
+
+        dispatch(signInStart());
+        try {
+            const res = await axios.post("/api/auth/signin", formData);
+            if (res.data) {
+                console.log(res.data);
+                alert("Sign In Successful");
+                dispatch(signInSuccess(res.data));
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000)
+                setTimeout(() => {
+                    // window.location.reload();
+                }, 3000);
+                // setError(false);
+            }
+        } catch (error) {
+            console.log(error);
+            if (error.response) {
+                setTimeout(() => {
+                    alert(error.response.data.message);
+                    // setError({ apiError: error.response.data.message ? error.response.data.message : "" });
+                }, 0);
+                if (error.response.data.message) {
+                    dispatch(signInFailure({ apiError: error.response.data.message ? error.response.data.message : "" }));
                 }
-            }).catch((error) => {
-                setLoading(true);
-                console.log(error);
-                if (error.response) {
-                    setTimeout(() => {
-                        setLoading(false);
-                        alert(error.response.data.message);
-                        setError({ apiError: error.response.data.message ? error.response.data.message : "" });
-                    }, 3000);
-                }
-            })
+            } else {
+                dispatch(signInFailure());
+            }
+        }
     }
 
     return (
@@ -64,7 +73,7 @@ const SignIn = () => {
                 {error.email && <p className="text-red-500 font-bold text-sm">{error.email}</p>}
                 <input onChange={handleChange} className="bg-slate-100 p-3 rounded-lg outline-none" type="password" placeholder='Password' id='password' />
                 {error.password && <p className="text-red-500 font-bold text-sm">{error.password}</p>}
-                <button onChange={handleChange} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90">{loading ? 'Loading...' : 'Sign In'}</button>
+                <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90">{loading ? 'Loading...' : 'Sign In'}</button>
             </form>
             <div className="flex gap-2 mt-5">
                 <p>Don't have an account?</p>
