@@ -36,7 +36,7 @@ const SignUp = () => {
                     alert("Sign Up Successfull");
                     setLoading(false);
                     setTimeout(() => {
-                        navigate("/");
+                        navigate("/sign-in");
                     }, 2000);
                     setTimeout(() => {
                         // window.location.reload();
