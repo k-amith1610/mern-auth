@@ -14,7 +14,11 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    profilePicture: {
+        type: String,
+        default: "https://img.freepik.com/premium-vector/student-avatar-illustration-user-profile-icon-youth-avatar_118339-4395.jpg",
+    },
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
