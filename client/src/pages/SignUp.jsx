@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import OAuth from "../components/OAuth";
 const SignUp = () => {
 
     const navigate = useNavigate();
@@ -67,6 +68,7 @@ const SignUp = () => {
                 <input onChange={handleChange} className="bg-slate-100 p-3 rounded-lg outline-none" type="password" placeholder='Password' id='password' />
                 {error.password && <p className="text-red-500 font-bold text-sm">{error.password}</p>}
                 <button onChange={handleChange} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90">{loading ? 'Loading...' : 'Sign up'}</button>
+                <OAuth />
             </form>
             <div className="flex gap-2 mt-5">
                 <p>Have an account?</p>

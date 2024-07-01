@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 const SignIn = () => {
 
@@ -74,6 +75,7 @@ const SignIn = () => {
                 <input onChange={handleChange} className="bg-slate-100 p-3 rounded-lg outline-none" type="password" placeholder='Password' id='password' />
                 {error.password && <p className="text-red-500 font-bold text-sm">{error.password}</p>}
                 <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90">{loading ? 'Loading...' : 'Sign In'}</button>
+                <OAuth />
             </form>
             <div className="flex gap-2 mt-5">
                 <p>Don't have an account?</p>
