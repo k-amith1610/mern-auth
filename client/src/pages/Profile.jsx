@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { MdEdit } from 'react-icons/md';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -68,6 +68,20 @@ const Profile = () => {
         }
     }
 
+    const handleDeleteAccount = async () => {
+        try {
+            dispatch(deleteUserStart());
+            const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            dispatch(deleteUserSuccess(data));
+
+        } catch (error) {
+            dispatch(deleteUserFailure())
+        }
+    }
+
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-center text-2xl font-semibold my-6">
@@ -96,8 +110,8 @@ const Profile = () => {
                 <button type="submit" className="uppercase font-bold border bg-slate-700 text-white rounded-lg p-3 hover:bg-opacity-95">{loading ? "Loading..." : "Update"}</button>
             </form>
             <div className="flex justify-between mt-3">
-                <span className="border p-2 rounded-lg border-slate-600 border-y-4 border-x-4 hover:opacity-90 cursor-pointer bg-red-400 font-semibold">Delete Account</span>
-                <span className="border p-2 rounded-lg border-slate-600 border-y-4 border-x-4 hover:opacity-90 cursor-pointer bg-green-400 font-semibold">Sign out</span>
+                <span onClick={handleDeleteAccount} className="border p-2 rounded-lg bg-red-500 font-semibold cursor-pointer hover:bg-red-700">Delete Account</span>
+                <span className="border p-2 rounded-lg bg-green-400 font-semibold cursor-pointer hover:bg-green-500">Sign out</span>
             </div>
             <p className="text-red-500 mt-5 font-semibold">{error && "*Something went wrong"}</p>
             <p className="text-green-600 mt-5 font-semibold">{updateSuccess && "Updated Successfull!!"}</p>
