@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { MdEdit } from 'react-icons/md';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOut } from '../redux/user/userSlice';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -82,6 +82,20 @@ const Profile = () => {
         }
     }
 
+    const handleSignout = async () => {
+        try {
+            await fetch("/api/auth/signout", {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
+            });
+            dispatch(signOut());
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-center text-2xl font-semibold my-6">
@@ -111,7 +125,7 @@ const Profile = () => {
             </form>
             <div className="flex justify-between mt-3">
                 <span onClick={handleDeleteAccount} className="border p-2 rounded-lg bg-red-500 font-semibold cursor-pointer hover:bg-red-700">Delete Account</span>
-                <span className="border p-2 rounded-lg bg-green-400 font-semibold cursor-pointer hover:bg-green-500">Sign out</span>
+                <span onClick={handleSignout} className="border p-2 rounded-lg bg-green-400 font-semibold cursor-pointer hover:bg-green-500">Sign out</span>
             </div>
             <p className="text-red-500 mt-5 font-semibold">{error && "*Something went wrong"}</p>
             <p className="text-green-600 mt-5 font-semibold">{updateSuccess && "Updated Successfull!!"}</p>
